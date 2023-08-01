@@ -1,0 +1,6 @@
+Reasoning for the chosen approach:
+
+1. In this implementation, we used a synchronized method to ensure thread safety while registering and canceling orders. This allows multiple threads to interact with the Live Order Board safely.
+2. To store order details in-memory, we used a simple ArrayList. However, in a real-world production system, it's recommended to use a distributed cache or database to store order details for horizontal scaling and fault tolerance.
+3. We used Java Streams for processing the orders to get the summary information. This approach provides a concise and readable code for sorting and summarizing the orders based on their prices and quantities.
+4. The time complexity for registering and canceling orders is O(1) since we're using an ArrayList. The time complexity for generating the summary information is O(n log n) due to the sorting step using Streams. Since the summary information generation doesn't grow linearly with the number of orders, it should be efficient for reasonable numbers of orders.
