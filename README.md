@@ -1,16 +1,17 @@
-### Hi there 👋
+# Live Order Board
 
-<!--
-**sandeep23bisht/sandeep23bisht** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+It provides functionalities to register, cancel, and get summary information of live orders.
 
-Here are some ideas to get you started:
+## Running the Application
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+1. Make sure you have Docker installed on your system.
+
+2. Clone this repository.
+
+3. Build the Docker image using the provided Dockerfile:
+
+docker build -t live-order-board .
+
+4. Run the Docker container:
+
+docker run -it live-order-board
