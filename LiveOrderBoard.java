@@ -1,7 +1,6 @@
 package com.live;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +12,7 @@ public class LiveOrderBoard {
         this.orders = new ArrayList<>();
     }
 
-	public synchronized void registerOrder(Order order) {
+    public synchronized void registerOrder(Order order) {
         orders.add(order);
     }
 
@@ -21,33 +20,32 @@ public class LiveOrderBoard {
         orders.remove(order);
     }
 
-    public synchronized List<Order> getSummary() {
-        Comparator<Order> orderByPrice = Comparator.comparingDouble(Order::getPricePerKg);
-        if (orders.isEmpty()) {
-            return Collections.emptyList();
-        }
-
+    public synchronized List<String> getSummaryInformation() {
         List<Order> sortedOrders = orders.stream()
-                .sorted(orderByPrice.thenComparing(Order::getOrderType))
+                .sorted(Comparator.comparingDouble(order -> order.getOrderType() == OrderType.BUY ? order.getPricePerKg() : -order.getPricePerKg()))
                 .collect(Collectors.toList());
 
-        List<Order> summaryOrders = new ArrayList<>();
-        Order currentOrder = sortedOrders.get(0);
-        double totalQuantity = currentOrder.getQuantity();
+        List<String> summaryInformation = new ArrayList<>();
+        int i = 0;
+        while (i < sortedOrders.size()) {
+            double totalPrice = sortedOrders.get(i).getPricePerKg();
+            double totalQuantity = 0;
 
-        for (int i = 1; i < sortedOrders.size(); i++) {
-            Order nextOrder = sortedOrders.get(i);
-            if (currentOrder.getPricePerKg() == nextOrder.getPricePerKg()) {
-                totalQuantity += nextOrder.getQuantity();
-            } else {
-                summaryOrders.add(new Order(currentOrder.getUserId(), totalQuantity, currentOrder.getPricePerKg(), currentOrder.getOrderType()));
-                currentOrder = nextOrder;
-                totalQuantity = currentOrder.getQuantity();
+            for (int j = i; j < sortedOrders.size(); j++) {
+                Order currentOrder = sortedOrders.get(j);
+                if (currentOrder.getPricePerKg() == totalPrice) {
+                    totalQuantity += currentOrder.getQuantity();
+                } else {
+                    break;
+                }
+                i = j;
             }
+
+            summaryInformation.add(totalQuantity + " kg for £" + totalPrice);
+            i++;
         }
 
-        summaryOrders.add(new Order(currentOrder.getUserId(), totalQuantity, currentOrder.getPricePerKg(), currentOrder.getOrderType()));
-
-        return summaryOrders;
+        return summaryInformation;
     }
+
 }
